@@ -16,11 +16,15 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set variables
+        id: vars
+        run: |
+          echo ::set-output name=repository::${GITHUB_REPOSITORY,,}
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/cubxity/nestedsocks:latest
+          tags: ghcr.io/${{ steps.vars.outputs.repository }}:latest
           platforms: linux/amd64,linux/arm64
